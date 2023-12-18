@@ -13,6 +13,10 @@ public abstract class Move {
         this.destinationCoordinate = destinationCoordinate;
     }
 
+    public int getDestinationCoordinate() {
+        return this.destinationCoordinate;
+    }
+
     //we want to distinguish between a attacking and a non-attacking move
 
     public static final class MajorMove extends Move {
