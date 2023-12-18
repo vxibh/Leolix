@@ -4,11 +4,9 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import static com.chess.engine.board.Move.*;
 
 public class Pawn extends Piece{
@@ -61,5 +59,10 @@ public class Pawn extends Piece{
             }
         }
         return ImmutableList.copyOf(legalMoves);
+    }
+
+    @Override
+    public String toString() {
+        return Piece.PieceType.PAWN.toString();
     }
 }
