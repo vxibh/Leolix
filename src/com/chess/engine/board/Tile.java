@@ -34,6 +34,10 @@ public abstract class Tile {
     //get the piece of a given tile
     public abstract Piece getPiece();
 
+    public int getTileCoordinate() {
+        return this.tileCoordinate;
+    }
+
     //empty tile method
     public static final class EmptyTile  extends Tile {
         private EmptyTile(final int coordinate) {
