@@ -17,7 +17,31 @@ public abstract class Move {
         return this.destinationCoordinate;
     }
 
-    public abstract Board execute() ;
+    public  Piece getMovedPiece() {
+        return this.movedPiece;
+    }
+
+    public Board execute() {
+
+        //materialising a new board, with the same board to see all moves
+        //
+        final Board.Builder builder = new Board.Builder();
+        for( final Piece piece : this.board.currentPlayer().getActivePieces()) {
+            //TODO hashCode and equals for pieces
+            if(!this.movedPiece.equals(piece)) {
+                builder.setPiece(piece);
+            }
+        }
+
+        for(final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
+            builder.setPiece(piece);
+        }
+
+        //move the moved Piece
+        builder.setPiece(this.movedPiece.movePiece(this));
+        builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+        return builder.build();
+    }
 
     //we want to distinguish between a attacking and a non-attacking move
 
@@ -26,28 +50,6 @@ public abstract class Move {
             super(board, movedPiece, destinationCoordinate);
         }
 
-        @Override
-        public Board execute() {
-
-            //materialising a new board, with the same board to see all moves
-            //
-            final Board.Builder builder = new Board.Builder();
-            for( final Piece piece : this.board.currentPlayer().getActivePieces()) {
-                //TODO hashCode and equals for pieces
-                if(!this.movedPiece.equals(piece)) {
-                    builder.setPiece(piece);
-                }
-            }
-
-            for(final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
-                builder.setPiece(piece);
-            }
-
-            //move the moved Piece
-            builder.setPiece(null);
-            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-            return builder.build();
-        }
     }
 
     public static final class AttackMove extends Move {
@@ -63,4 +65,6 @@ public abstract class Move {
             return null;
         }
     }
+
+    
 }

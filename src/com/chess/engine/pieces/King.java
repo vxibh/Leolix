@@ -48,6 +48,12 @@ public class King extends Piece{
         }
         return ImmutableList.copyOf(legalMoves);
     }
+
+    @Override
+    public King movePiece(final Move move) {
+        return new King(move.getDestinationCoordinate(), move.getMovedPiece().getPieceAlliance());
+    }
+
     @Override
     public String toString() {
         return Piece.PieceType.KING.toString();
