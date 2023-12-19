@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.chess.engine.player.MoveStatus.DONE;
+
 
 public abstract class Player {
 
@@ -23,6 +25,10 @@ public abstract class Player {
         this.playerKing = establishKing();
         this.legalMoves = legalMoves;
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty();
+    }
+
+    public King getPlayerKing() {
+        return this.playerKing;
     }
 
     //if the destination coordinate of the enemy coincides with the current coordinate of that of king of the current player,
@@ -64,7 +70,7 @@ public abstract class Player {
         return !this.isInCheck && !hasEscapeMoves();
     }
 
-    //executing all of the legal moves on an imaginary board abstractly to check if the king can escape checkmate
+    //executing all the legal moves on an imaginary board abstractly to check if the king can escape checkmate
     protected boolean hasEscapeMoves() {
         for(final Move move : this.legalMoves) {
             final MoveTransition transition = makeMove(move);
@@ -80,8 +86,24 @@ public abstract class Player {
     }
 
     public MoveTransition makeMove(final Move move) {
-        return null;
+
+        if(!isMoveLegal(move)) {
+            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
+        }
+
+        final Board transitionBoard = move.execute();
+        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transitionBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(), transitionBoard.currentPlayer().getLegalMoves());
+
+        if(!kingAttacks.isEmpty()) {
+            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+        }
+        return new MoveTransition(transitionBoard, move, DONE);
     }
+
+    private Collection<Move> getLegalMoves() {
+        return this.legalMoves;
+    }
+
     public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
